@@ -1,0 +1,28 @@
+name: Build Dark God mod
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Inspect workspace
+        run: |
+          pwd
+          id
+          ls -la
+          mkdir -p build/test && echo "MKDIR_OK" || echo "MKDIR_FAILED"
+          rm -rf build/test
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.1.1
+      - run: gradle build --no-daemon --stacktrace
+      - uses: actions/upload-artifact@v4
+        with:
+          name: darkgod-mod
+          path: build/libs/*.jar
